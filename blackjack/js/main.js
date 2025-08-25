@@ -48,7 +48,6 @@ function dealerDrawsCard(callback){
         })
 }
 
-
 function showGameButtons(){
     document.getElementById('hit').style.visibility = "visible"
     document.getElementById('stand').style.visibility = "visible"
@@ -83,7 +82,6 @@ function stand(){
     document.getElementById('dealercard1').src = drawData.cards[1].image
     showDealersCount()
     dealerTurn()
-
 }
 
 function dealerTurn() {
