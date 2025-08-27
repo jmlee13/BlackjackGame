@@ -23,3 +23,9 @@ h1{
 #buttons {
     text-align: center;
 }
+
+.player {
+    margin: auto;
+    width: 25%;
+    height: 25%;
+}

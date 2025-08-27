@@ -2,6 +2,7 @@ const express = require('express')
 const MongoClient = require('mongodb').MongoClient
 const app = express()
 const PORT = 8000
+app.use(express.static(__dirname));
 
 const deckOfCards = [
         {
@@ -322,14 +323,27 @@ const deckOfCards = [
         'suit': 'diamonds'
     },
 ]
+let shoe = [];
+for (let i = 0; i < 6; i++){
+    shoe = shoe.concat(deckOfCards.map(card => ({ ...card})))
+}
+app.set('view engine', 'ejs')
+
 app.use('/deck_images', express.static('public/deck_images'));
 
-app.post('/hit', (req, res) => {
+app.get('/hit', (req, res) => {
 
 })
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html')
+app.get('/play', (req, res) => {
+    //const randomIndex = Math.floor(Math.random() * shoe.length);
+    //const card = shoe.splice(randomIndex, 1)[0];
+    const card = deckOfCards[0]
+    res.json({ frontImage: card.frontImage })
 })
+
+/*app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html')
+})*/
 
 app.get('/api/:cardId', (req, res) => {
     const cardId = req.params.cardId.toLowerCase()

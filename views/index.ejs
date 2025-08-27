@@ -8,7 +8,7 @@
 <body>
     <h1>Welcome to BlackJack</h1>
     <div id="buttons">
-        <button action="/play" id="play">Play</button>
+        <button action="'play" id="play">Play</button>
         <button action="/draw" id="draw">Draw</button>
         <button action="/hit" id="hit">Hit</button>
         <button action="/stand" id="stand">Stand</button>
@@ -20,12 +20,17 @@
     </div>
     <h3 class="cardCount" id="dealerCount"></h3>
     <h2 id="you">You</h2>
-    <div id="playerCards">
-        <img class="player" id="playercard1" src="">
-        <img class="player" id="playercard2" src="">
+    <div class="cards">
+        <% for(var i=0; i < cards.length; i++) {%>
+        <li class="card">
+            <img class="player" id="playercard1" src="">
+            <img class="player" id="playercard2" src="">
+        </li>
+        <% } %>
     </div>
     <h3 class="cardCount" id="playerCount"></h3>
 
-    <script type="text/javascript" src="js/main.js"></script>
+
+    <script src="js/main.js"></script>
 </body>
 </html>

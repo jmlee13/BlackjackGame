@@ -1,4 +1,4 @@
-document.getElementById('draw').addEventListener('click', drawCards)
+/*document.getElementById('draw').addEventListener('click', drawCards)
 document.getElementById('draw').addEventListener('click', showGameButtons)
 document.getElementById('hit').style.visibility = "hidden"
 document.getElementById('stand').style.visibility = "hidden"
@@ -48,6 +48,7 @@ function dealerDrawsCard(callback){
         })
 }
 
+
 function showGameButtons(){
     document.getElementById('hit').style.visibility = "visible"
     document.getElementById('stand').style.visibility = "visible"
@@ -82,6 +83,7 @@ function stand(){
     document.getElementById('dealercard1').src = drawData.cards[1].image
     showDealersCount()
     dealerTurn()
+
 }
 
 function dealerTurn() {
@@ -126,4 +128,15 @@ function convertToNum(val){
 function newGame(){
     document.getElementById('playerCards').remove()
     document.getElementById('dealerCards').remove()
-}
+}*/
+
+document.getElementById('play').addEventListener('click', _ => {
+    console.log('clicked!')
+    fetch('/play')
+        .then(res => res.json())
+        .then(card => {
+            const firstPlayerCard = document.createElement('img');
+            firstPlayerCard.src = card.frontImage;
+            document.getElementById('playercard1').src = card.frontImage;
+        })
+})
