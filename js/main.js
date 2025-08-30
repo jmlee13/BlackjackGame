@@ -42,6 +42,9 @@ function dealerTurn() {
         else if (dealerCount >= 17 && dealerCount <= 21 && dealerCount > playerCount) {
             playerLose()
         }
+        else if (dealerCount == playerCount){
+            document.getElementById('playerCount').innerText = `You pushed.`
+        }
     }
 }
 
