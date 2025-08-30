@@ -1,142 +1,170 @@
-/*document.getElementById('draw').addEventListener('click', drawCards)
-document.getElementById('draw').addEventListener('click', showGameButtons)
-document.getElementById('hit').style.visibility = "hidden"
-document.getElementById('stand').style.visibility = "hidden"
-let playerCount = 0
-let dealerCount = 0
+const dealerCard = {}
+let dealerCount = 0;
+let playerCount = 0;
+hideButtons()
 
-let deckId = ''
-fetch(`https://www.deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6`)
-    .then(res => res.json())    //parse response as JSON
-    .then(data => {
-        console.log(data)
-        deckId = data.deck_id
-    })
-    .catch(err => {
-        console.log(`error ${err}`)
-    })
-
-function drawCards(){
-    const url = `https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`
-    fetch(url)
+function dealerDrawsCard(callback) {
+    console.log('dealer card drawn');
+    fetch(`/dealerDraw`)
         .then(res => res.json())
         .then(data => {
-            drawData = data
-            console.log(data)
-            document.getElementById('playercard1').src = data.cards[0].image
-            document.getElementById('playercard2').src = data.cards[2].image
-            dealerBackCard()
-            document.getElementById('dealercard2').src = data.cards[3].image
-            playerCount = convertToNum(data.cards[0].value) + convertToNum(data.cards[2].value)
-            dealerCount = convertToNum(data.cards[1].value) + convertToNum(data.cards[3].value)
-            document.getElementById('playerCount').innerText = `You have: ${playerCount}`
-            document.getElementById('dealerCount').innerText = `Dealer has: ???`
-        })
-}
-
-function dealerDrawsCard(callback){
-        fetch(`https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`)
-        .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            dealerCount += convertToNum(data.cards[0].value)
-            const img = document.createElement('img')
-            img.src = data.cards[0].image
-            document.getElementById('dealerCards').appendChild(img)
-            showDealersCount()
+            console.log(data.dealerDrawnCard);
+            dealerCount += aceCalc(data.dealerDrawnCard, dealerCount);
+            const img = document.createElement('img');
+            img.src = data.dealerDrawnCard.frontImage;
+            img.className = 'dealerCards';
+            document.querySelector('.dealer').appendChild(img)
+            document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`;
             if (callback) callback()
         })
 }
 
-
-function showGameButtons(){
+function showGameButtons() {
     document.getElementById('hit').style.visibility = "visible"
     document.getElementById('stand').style.visibility = "visible"
     document.getElementById('hit').addEventListener('click', hit)
     document.getElementById('stand').addEventListener('click', stand)
-    }
-
-function hit(){
-    fetch(`https://www.deckofcardsapi.com/api/deck/${deckId}/draw/?count=1`)
-        .then(res => res.json())
-        .then(data => {
-            console.log(data)
-            const img = document.createElement('img')
-            img.src = data.cards[0].image
-            document.getElementById('playerCards').appendChild(img)
-            playerCount += convertToNum(data.cards[0].value)
-            document.getElementById('playerCount').innerText = `You have: ${playerCount}`
-            if (playerCount > 21){
-                busted()
-            }
-        })
-}
-
-function busted(){
-    document.getElementById('playerCount').innerText = `You Busted!`
-    document.getElementById('hit').style.visibility = "hidden"
-    document.getElementById('stand').style.visibility = "hidden"
-
-}
-
-function stand(){
-    document.getElementById('dealercard1').src = drawData.cards[1].image
-    showDealersCount()
-    dealerTurn()
-
 }
 
 function dealerTurn() {
+    console.log('dealer turn started');
+    document.getElementById('dealercard2').src = dealerCard['card2'];
+    document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`;
     if (dealerCount < 17) {
         setTimeout(() => {
             dealerDrawsCard(dealerTurn); // call again after drawing
         }, 1000);
     } else {
         // Dealer is done, check winner here if needed
-        if (dealerCount > 21 || (dealerCount >= 17 && dealerCount < 21 && dealerCount < playerCount)){
+        if (dealerCount > 21 || (dealerCount >= 17 && dealerCount < 21 && dealerCount < playerCount)) {
             document.getElementById('playerCount').innerText = `You win!`
         }
-        else if (dealerCount >= 17 && dealerCount <= 21 && dealerCount > playerCount){
-            busted()
+        else if (dealerCount >= 17 && dealerCount <= 21 && dealerCount > playerCount) {
+            playerLose()
         }
     }
 }
 
-function showDealersCount(){
-    document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`
-}
-
-function dealerBackCard(){
-        document.getElementById('dealercard1').src = 'https://www.deckofcardsapi.com/static/img/back.png'
-}
-
-function convertToNum(val){
-    if (val === 'KING' || val === 'QUEEN' || val === 'JACK'){
-        return 10
+function playerCountCheck() {
+    if (playerCount < 21) {
+        document.getElementById('playerCount').innerText = `You have: ${playerCount}`;
     }
-    else if ((val === 'ACE' && playerCount <= 10) || (val === 'ACE' && dealerCount <= 10)){
-        return 11
+    else if (playerCount > 21) {
+        document.getElementById('playerCount').innerText = `You busted with ${playerCount}`;
+        hideButtons();
     }
-    else if ((val === 'ACE' && playerCount >= 20) || (val === 'ACE' && dealerCount >= 20)){
-        return 1
-    }
-    else {
-        return Number(val)
+    else if (playerCount = 21){
+        document.getElementById('playerCount').innerText = `You have: ${playerCount}`;
+        hideButtons();
+        dealerTurn();
     }
 }
 
-function newGame(){
-    document.getElementById('playerCards').remove()
-    document.getElementById('dealerCards').remove()
-}*/
+function playerLose(){
+    document.getElementById('playerCount').innerText = `You lose!`;
+}    
+
+function hideButtons(){
+    document.getElementById('hit').style.visibility = 'hidden';
+    document.getElementById('stand').style.visibility = 'hidden';
+}
+
+function aceCalc(card, currentCount){
+    if (card.name === 'ace'){
+        return currentCount <= 10 ? 11 : 1;
+    }
+    if (typeof card.value === 'number'){
+        return card.value;
+    }
+    if (!isNaN(Number(card.value))){
+        return Number(card.value);
+    }
+    return 0;
+}
 
 document.getElementById('play').addEventListener('click', _ => {
+    document.querySelectorAll('.playerCards').forEach(card => card.remove());
+    document.querySelectorAll('.dealerCards').forEach(card => card.remove());
+    document.getElementById('hit').style.visibility = 'visible';
+    document.getElementById('stand').style.visibility = 'visible';
     console.log('clicked!')
     fetch('/play')
         .then(res => res.json())
-        .then(card => {
-            const firstPlayerCard = document.createElement('img');
-            firstPlayerCard.src = card.frontImage;
-            document.getElementById('playercard1').src = card.frontImage;
+        .then(data => {
+            //Creates img elements for the player's cards and dealer's cards
+            const playerCardOne = document.createElement('img');
+            const playerCardTwo = document.createElement('img');
+            const dealerCardOne = document.createElement('img');
+            const dealerCardTwo = document.createElement('img');
+
+            //Assigns the front image, id and class of the first player card to the created element
+            playerCardOne.src = data.cardOne.frontImage;
+            playerCardOne.id = 'playercard1';
+            playerCardOne.className = 'playerCards';
+
+            //Assigns the front image, id and class of the second player card to the created element
+            playerCardTwo.src = data.cardTwo.frontImage;
+            playerCardTwo.id = 'playercard2';
+            playerCardTwo.className = 'playerCards';
+
+            //Assigns the front image, id and class of the dealer cards to their created elements
+            dealerCardOne.src = data.dealerCardOne.frontImage;
+            dealerCardOne.id = 'dealercard1';
+            dealerCardOne.className = 'dealerCards';
+
+            dealerCardTwo.src = data.dealerCardTwo.backImage;
+            dealerCardTwo.id = 'dealercard2';
+            dealerCardTwo.className = 'dealerCards';
+
+            //Appends the new elements to the DOM
+            document.querySelector('.player').appendChild(playerCardOne);
+            document.querySelector('.player').appendChild(playerCardTwo);
+            document.querySelector('.dealer').appendChild(dealerCardOne);
+            document.querySelector('.dealer').appendChild(dealerCardTwo);
+            
+            //Calculates the player count to be displayed at the start of the game
+            playerCount = aceCalc(data.cardOne, playerCount) + aceCalc(data.cardTwo, playerCount);
+            console.log(playerCount)
+            dealerCount = aceCalc(data.dealerCardOne, dealerCount) + aceCalc(data.dealerCardTwo, dealerCount);
+
+            //Assigns the created html elements with their respective card images and displays the player's and dealer's card count
+            document.getElementById('playercard1').src = data.cardOne.frontImage;
+            document.getElementById('playercard2').src = data.cardTwo.frontImage;
+            document.getElementById('playerCount').innerText = `You have: ${playerCount}`
+            document.getElementById('dealercard1').src = data.dealerCardOne.frontImage;
+            document.getElementById('dealercard2').src = data.dealerCardTwo.backImage;
+            document.getElementById('dealerCount').innerText = `Dealer has: ???`
+
+            //Assigns the dealer's cards to the shared object to be used in the 'stand' function to reveal the dealer's second card
+            dealerCard['card1'] = data.dealerCardOne;
+            dealerCard['card2'] = data.dealerCardTwo.frontImage;
+        })
+})
+
+document.getElementById('hit').addEventListener('click', _ => {
+    console.log('hit')
+    fetch('/hit')
+        .then(res => res.json())
+        .then(data => {
+            const drawnPlayerCard = document.createElement('img');
+            drawnPlayerCard.src = data.drawCard.frontImage;
+            drawnPlayerCard.className = 'playerCards';
+            console.log(playerCount)
+            playerCount += aceCalc(data.drawCard, playerCount);
+            console.log(playerCount)
+            document.querySelector('.player').appendChild(drawnPlayerCard);
+            playerCountCheck()
+        })
+})
+
+document.getElementById('stand').addEventListener('click', _ => {
+    console.log('stand')
+    fetch('/stand')
+        .then(res => res.json())
+        .then(data => {
+            console.log(dealerCard['card2']);
+            
+            hideButtons();
+            dealerTurn();
         })
 })
