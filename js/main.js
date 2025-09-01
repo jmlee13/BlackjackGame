@@ -1,4 +1,6 @@
-const dealerCard = {}
+const dealerCard = {};
+const playerHand = [];
+const dealerHand = [];
 let dealerCount = 0;
 let playerCount = 0;
 hideButtons()
@@ -13,6 +15,10 @@ function dealerDrawsCard(callback) {
             const img = document.createElement('img');
             img.src = data.dealerDrawnCard.frontImage;
             img.className = 'dealerCards';
+            dealerHand.push(data.dealerDrawnCard);
+            console.log(dealerHand);
+            dealerCount = handCalc(dealerHand);
+            console.log(dealerCount);
             document.querySelector('.dealer').appendChild(img)
             document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`;
             if (callback) callback()
@@ -61,6 +67,31 @@ function playerCountCheck() {
         hideButtons();
         dealerTurn();
     }
+}
+
+function handCalc(cards){
+    let total = 0;
+    let aceCount = 0;
+    for (const card of cards) {
+        if (card.name && card.name.toLowerCase() === 'ace'){
+            aceCount++;
+        }
+        else if (typeof card.value === 'number'){
+            total += card.value;
+        }
+        else if (!isNaN(Number(card.value))){
+            total += Number(card.value);
+        }
+    }
+    for (let i=0; i < aceCount; i++){
+        if (total + 11 <= 21 - (aceCount - 1 - i)){
+            total += 11;
+        }
+        else {
+            total += 1;
+        }
+    }
+    return total;
 }
 
 function playerLose(){
@@ -126,9 +157,13 @@ document.getElementById('play').addEventListener('click', _ => {
             document.querySelector('.dealer').appendChild(dealerCardTwo);
             
             //Calculates the player count to be displayed at the start of the game
-            playerCount = aceCalc(data.cardOne, playerCount) + aceCalc(data.cardTwo, playerCount);
-            console.log(playerCount)
-            dealerCount = aceCalc(data.dealerCardOne, dealerCount) + aceCalc(data.dealerCardTwo, dealerCount);
+            playerHand.length = 0;
+            playerHand.push(data.cardOne, data.cardTwo);
+            playerCount = handCalc(playerHand);
+            console.log(playerCount);
+            dealerHand.length = 0;
+            dealerHand.push(data.dealerCardOne, data.dealerCardTwo);
+            dealerCount = handCalc(dealerHand);
 
             //Assigns the created html elements with their respective card images and displays the player's and dealer's card count
             document.getElementById('playercard1').src = data.cardOne.frontImage;
@@ -136,7 +171,7 @@ document.getElementById('play').addEventListener('click', _ => {
             document.getElementById('playerCount').innerText = `You have: ${playerCount}`
             document.getElementById('dealercard1').src = data.dealerCardOne.frontImage;
             document.getElementById('dealercard2').src = data.dealerCardTwo.backImage;
-            document.getElementById('dealerCount').innerText = `Dealer has: ???`
+            document.getElementById('dealerCount').innerText = `Dealer has: ???`;
 
             //Assigns the dealer's cards to the shared object to be used in the 'stand' function to reveal the dealer's second card
             dealerCard['card1'] = data.dealerCardOne;
@@ -153,7 +188,8 @@ document.getElementById('hit').addEventListener('click', _ => {
             drawnPlayerCard.src = data.drawCard.frontImage;
             drawnPlayerCard.className = 'playerCards';
             console.log(playerCount)
-            playerCount += aceCalc(data.drawCard, playerCount);
+            playerHand.push(data.drawCard);
+            playerCount = handCalc(playerHand);
             console.log(playerCount)
             document.querySelector('.player').appendChild(drawnPlayerCard);
             playerCountCheck()
@@ -165,8 +201,6 @@ document.getElementById('stand').addEventListener('click', _ => {
     fetch('/stand')
         .then(res => res.json())
         .then(data => {
-            console.log(dealerCard['card2']);
-            
             hideButtons();
             dealerTurn();
         })
