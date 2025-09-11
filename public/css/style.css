@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@font-face {
+    font-family: 'Casino';
+    src: url('/public/fonts/Casino3DFilled-Italic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
