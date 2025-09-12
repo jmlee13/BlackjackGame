@@ -253,6 +253,10 @@ document.getElementById('hit').addEventListener('click', _ => {
 })
 
 document.getElementById('stand').addEventListener('click', _ => {
+    //Play draw card sound
+    drawCardAudio.currentTime = 0;
+    drawCardAudio.play();
+
     fetch('/stand')
         .then(res => res.json())
         .then(data => {
