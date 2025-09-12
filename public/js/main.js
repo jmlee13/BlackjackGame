@@ -3,9 +3,8 @@ const playerHand = [];
 const dealerHand = [];
 let dealerCount = 0;
 let playerCount = 0;
-const drawCardAudio = new Audio('/audio/cardDrawAudio.wav');
-const youPushWith21 = new Audio('/audio/youLose.wav');
-const clickAudio = new Audio('/audio/clickAudio.wav');
+const drawCardAudio = new Audio('/audio/cardDrawAudio.mp3');
+const youPushWith21 = new Audio('/audio/youLose.mp3');
 hideButtons()
 
 function showPlay() {
@@ -232,10 +231,6 @@ function play(){
         .catch(err => console.log(err))}
 
 document.getElementById('hit').addEventListener('click', _ => {
-    //Play button click sound
-    //clickAudio.currentTime = 0;
-    //clickAudio.play();
-
     //Play draw card sound
     drawCardAudio.currentTime = 0;
     drawCardAudio.play();
