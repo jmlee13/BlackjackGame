@@ -149,7 +149,7 @@ document.getElementById('play').addEventListener('click', _ => {
     document.getElementById('play').classList.remove('opacity-100');
     document.getElementById('play').classList.add('opacity-0');
     document.querySelector('h1').style.animation = 'none';
-    document.querySelector('h1').classList.add('fixed', 'top-10');
+    document.querySelector('h1').classList.add('opacity-0');
 
     //Reveals the hit and stand buttons
     document.getElementById('hit').classList.remove('opacity-0');
