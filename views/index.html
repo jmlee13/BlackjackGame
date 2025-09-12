@@ -21,43 +21,47 @@
   </style>
 </head>
 <body class="bg-green-700 text-center min-h-screen flex flex-col items-center justify-center">
-
-    <h1 style="font-family: 'Casino3DFilled', sans-serif;" class= "z-10 fixed top-72 text-8xl italic animate-pulse flex justify-center">Welcome to BlackJack</h1>
     
-    <h2 class="cardCount text-4xl" style="font-family: 'Gobold', sans-serif; " id="dealerCount"></h3>
+    <h1 style="font-family: 'Casino3DFilled', sans-serif;" class= "z-10 fixed lg:top-72 lg:text-8xl top-28 text-7xl italic animate-pulse flex justify-center">Welcome to BlackJack</h1>
+    
+    <h2 class="cardCount fixed lg:top-40 lg:text-4xl text-6xl top-36" style="font-family: 'Gobold', sans-serif; " id="dealerCount"></h3>
 
-    <div class="dealer flex space-x-6 p-4">
-        <div id="dealerCardOneDiv" class="dealercardone w-40 h-auto rounded-full flex items-center justify-center transition-all delay-150 duration-500 ">
+    <div class="dealer flex lg:space-x-6 lg:p-4 lg:max-w-7xl space-x-2 p-2 max-w-sm">
+        <div id="dealerCardOneDiv" class="dealercardone lg:w-40 w-20 h-auto rounded-full flex items-center justify-center">
             <img class="dealerCards" id="dealercard1"src="">
         </div>
-        <div id="dealerCardTwoDiv" class="dealercardtwo w-40 h-auto rounded-full flex items-center justify-center transition-all delay-150 duration-500 ">
+        <div id="dealerCardTwoDiv" class="dealercardtwo lg:w-40 w-20 h-auto rounded-full flex items-center justify-center">
             <img class="dealerCards" id="dealercard2"src="">
         </div>
     </div>
 
-    <div class="player flex space-x-6 p-4">
-        <div id="playerCardOneDiv" class="playercardone w-40 h-auto rounded-full flex items-center justify-center transition-all delay-150 duration-500 ">
+    <div class="player flex lg:space-x-6 lg:p-4 lg:max-w-7xl space-x-2 p-2 max-w-sm">
+        <div id="playerCardOneDiv" class="playercardone lg:w-40 w-20 h-auto rounded-full flex items-center justify-center">
             <img class="playerCards" id="playercard1" src="">
         </div>
-        <div id="playerCardTwoDiv" class="playercardtwo w-40 h-auto rounded-full flex items-center justify-center transition-all delay-150 duration-500 ">
+        <div id="playerCardTwoDiv" class="playercardtwo lg:w-40 w-20 h-auto rounded-full flex items-center justify-center">
             <img class="playerCards" id="playercard2" src="">
         </div>
     </div>
 
-    <h2 class="cardCount text-4xl" style="font-family: 'Gobold', sans-serif;" id="playerCount"></h3>
+    <h2 class="cardCount fixed bottom-40 lg:text-4xl text-6xl" style="font-family: 'Gobold', sans-serif;" id="playerCount"></h3>
 
     <div class="fixed inset-10 m-auto w-64 h-32 flex justify-center items-center">
-        <button action="/play" class= "z-10 px-10 py-4 opacity-100 text-4xl bg-gradient-to-r bg-red-600 text-black font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-500 hover:scale-110" id="play">Play</button>
+        <button action="/play" class= "z-10 lg:px-10 lg:py-4 px-24 py-12 opacity-100 text-4xl sm:block hidden bg-gradient-to-r bg-red-600 text-black font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-500 hover:scale-110" id="play">Play</button>
     </div>
 
-    <div class="z-10 fixed bottom-16 space-x-4" id="buttons">
-        <button action="/hit" class= " px-6 py-3 opacity-100 bg-gradient-to-r bg-red-600 text-black font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-200 hover:scale-110" id="hit">Hit</button>
-        <button action="/stand" class= "px-6 py-3 opacity-100 bg-gradient-to-r bg-red-600 text-black font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-200 hover:scale-110" id="stand">Stand</button>
+    <div class="z-10 fixed lg:bottom-16 bottom-8 space-x-4" id="buttons">
+        <button action="/hit" class= "lg:px-6 lg:py-3 px-16 py-8 opacity-100 bg-gradient-to-r bg-red-600 text-black lg:text-xl text-3xl font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-200 hover:scale-110" id="hit">Hit</button>
+        <button action="/stand" class= "lg:px-6 lg:py-3 px-16 py-8 opacity-100 bg-gradient-to-r bg-red-600 text-black lg:text-xl text-3xl font-semibold rounded-lg shadow-md hover:bg-red-800 transition-all duration-200 hover:scale-110" id="stand">Stand</button>
     </div>
 
-    <div class="fixed opacity-90 top-1/2 left-0 w-32 h-screen bg-red-800 rounded-r-full border-t-[32px] border-b-[32px] border-r-[32px] border-black transform -translate-y-1/2"></div>
-    <div class="fixed opacity-90 top-1/2 right-0 w-32 h-screen bg-red-800 rounded-l-full border-t-[32px] border-b-[32px] border-l-[32px] border-black transform -translate-y-1/2"></div>
-
+    <div class="fixed opacity-90 top-1/2 lg:left-0 lg:w-32 left-0 w-6 h-screen bg-red-800 rounded-r-full lg:border-t-[32px] lg:border-b-[32px] lg:border-r-[32px] border-t-[16px] border-b-[16px] border-r-[16px] border-black transform -translate-y-1/2"></div>
+    <div class="fixed opacity-90 top-1/2 lg:right-0 lg:w-32 right-0 w-6 h-screen bg-red-800 rounded-l-full lg:border-t-[32px] lg:border-b-[32px] lg:border-l-[32px] border-t-[16px] border-b-[16px] border-l-[16px] border-black transform -translate-y-1/2"></div>
+    <div class="bg-transparent w-screen h-screen fixed top-0 left-0" style="font-family: 'Gobold', sans-serif;" id="touchArea">
+        <p class="flex flex-col items-center justify-start mt-8 text-white text-3xl animate-pulse" style="font-family: 'Gobold', sans-serif;">Tap to Play</p>
+        <p class="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-8 text-white text-3xl animate-pulse" style="font-family: 'Gobold', sans-serif;">Tap to Play</p>
+    </div>
+    
     <style>
         .shadow-text {
         color: black;

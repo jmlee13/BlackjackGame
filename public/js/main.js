@@ -9,6 +9,7 @@ const clickAudio = new Audio('/audio/clickAudio.wav');
 hideButtons()
 
 function showPlay() {
+    document.getElementById('touchArea').style.visibility = 'visible';
     document.getElementById('play').style.visibility = "visible"
     document.getElementById('play').className - 'opacity-0';
     document.getElementById('play').className += 'opacity-100';
@@ -31,7 +32,7 @@ function dealerDrawsCard(callback) {
             dealerCount = handCalc(dealerHand);
             console.log(dealerCount);
             const dealerDrawnCardDiv = document.createElement('div');
-            dealerDrawnCardDiv.className = 'dealerCards w-40 h-auto flex items-center justify-center';
+            dealerDrawnCardDiv.className = 'dealerCards lg:w-40 w-20 h-auto rounded-full flex items-center justify-center';
             document.querySelector('.dealer').appendChild(dealerDrawnCardDiv).appendChild(img);
             document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`;
             if (callback) callback()
@@ -121,12 +122,12 @@ function playerLose(){
 }    
 
 function hideButtons(){
-    document.getElementById('hit').style.visibility = 'hidden';
-    document.getElementById('stand').style.visibility = 'hidden';
     document.getElementById('hit').classList.remove('opacity-100');
     document.getElementById('hit').classList.add('opacity-0');
     document.getElementById('stand').classList.remove('opacity-100');
     document.getElementById('stand').classList.add('opacity-0');
+    document.getElementById('hit').style.visibility = 'hidden';
+    document.getElementById('stand').style.visibility = 'hidden';
 }
 
 function aceCalc(card, currentCount){
@@ -142,9 +143,11 @@ function aceCalc(card, currentCount){
     return 0;
 }
 
-document.getElementById('play').addEventListener('click', _ => {
-
+document.querySelector('#touchArea').addEventListener('touchstart', play);
+document.getElementById('play').addEventListener('click', play);
+function play(){
     //Play button animation
+    document.getElementById('touchArea').style.visibility = 'hidden';
     document.getElementById('play').style.visibility = 'hidden';
     document.getElementById('play').classList.remove('opacity-100');
     document.getElementById('play').classList.add('opacity-0');
@@ -226,7 +229,7 @@ document.getElementById('play').addEventListener('click', _ => {
             dealerCard['card1'] = data.dealerCardOne;
             dealerCard['card2'] = data.dealerCardTwo.frontImage;
         })
-})
+        .catch(err => console.log(err))}
 
 document.getElementById('hit').addEventListener('click', _ => {
     //Play button click sound
@@ -249,7 +252,7 @@ document.getElementById('hit').addEventListener('click', _ => {
             playerCountCheck();
             console.log(playerCount);
             const drawnPlayerCardDiv = document.createElement('div');
-            drawnPlayerCardDiv.className = 'playerCards w-40 h-auto flex items-center justify-center';
+            drawnPlayerCardDiv.className = 'playerCards lg:w-40 w-20 h-auto rounded-full flex items-center justify-center';
             document.querySelector('.player').appendChild(drawnPlayerCardDiv).appendChild(drawnPlayerCard);
         })
 })
