@@ -419,12 +419,17 @@ const deckOfCards = [
         'frontImage': 'http://www.marytcusack.com/maryc/decks/Images/Cards/WWDeadwood/DC3K.jpg',
     },
 ]
+
 let shoe = [];
-for (let i = 0; i < 6; i++){
-    shoe = shoe.concat(deckOfCards.map(card => ({ ...card})))
+function createDeck() {
+    
+    for (let i = 0; i < 6; i++){
+        shoe = shoe.concat(deckOfCards.map(card => ({ ...card})))
+    }
 }
 
 const dealerCardTwoShared = {};
+createDeck();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -437,8 +442,11 @@ app.get('/hit', (req, res) => {
     const drawCard = shoe.splice(randomIndex, 1)[0];
     res.json({ drawCard: drawCard})
 });
-    
+
 app.get('/play', (req, res) => {
+    if (shoe.length < 52){
+        createDeck();
+    }
     const randomIndexCardOne = Math.floor(Math.random() * shoe.length);
     const cardOne = shoe.splice(randomIndexCardOne, 1)[0];
     const randomIndexCardTwo = Math.floor(Math.random() * shoe.length);
@@ -448,6 +456,7 @@ app.get('/play', (req, res) => {
     const randomIndexDealerCardTwo = Math.floor(Math.random() * shoe.length);
     const dealerCardTwo = shoe.splice(randomIndexDealerCardTwo, 1)[0];
     dealerCardTwoShared['card'] = dealerCardTwo;
+    console.log(cardOne, cardTwo, dealerCardOne, dealerCardTwo);
     res.json({ cardOne: cardOne, cardTwo: cardTwo, dealerCardOne: dealerCardOne, dealerCardTwo: dealerCardTwo})
 })
 
@@ -478,5 +487,5 @@ app.get('/ace', (req, res) => {
 })
 
 app.listen(process.env.PORT || PORT, () => {
-    console.log('server running');
+    console.log(`Server running on http://localhost:${PORT}`);
 })

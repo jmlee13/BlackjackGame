@@ -7,10 +7,10 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        casino: ['Casino', 'sans-serif'],
-      }
+        casino: ['Casino3DFilled', 'sans-serif'],
+        gobold: ['Gobold', 'sans-serif'],
+      },
     },
   },
   plugins: [],
 }
-

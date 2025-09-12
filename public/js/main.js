@@ -3,9 +3,20 @@ const playerHand = [];
 const dealerHand = [];
 let dealerCount = 0;
 let playerCount = 0;
+const drawCardAudio = new Audio('/audio/cardDrawAudio.wav');
+const youPushWith21 = new Audio('/audio/youLose.wav');
+const clickAudio = new Audio('/audio/clickAudio.wav');
 hideButtons()
 
+function showPlay() {
+    document.getElementById('play').style.visibility = "visible"
+    document.getElementById('play').className - 'opacity-0';
+    document.getElementById('play').className += 'opacity-100';
+}
+
 function dealerDrawsCard(callback) {
+    drawCardAudio.currentTime = 0;
+    drawCardAudio.play();
     console.log('dealer card drawn');
     fetch(`/dealerDraw`)
         .then(res => res.json())
@@ -20,7 +31,7 @@ function dealerDrawsCard(callback) {
             dealerCount = handCalc(dealerHand);
             console.log(dealerCount);
             const dealerDrawnCardDiv = document.createElement('div');
-            dealerDrawnCardDiv.className = 'dealerCards w-48 h-auto flex items-center justify-center';
+            dealerDrawnCardDiv.className = 'dealerCards w-40 h-auto flex items-center justify-center';
             document.querySelector('.dealer').appendChild(dealerDrawnCardDiv).appendChild(img);
             document.getElementById('dealerCount').innerText = `Dealer has: ${dealerCount}`;
             if (callback) callback()
@@ -44,15 +55,23 @@ function dealerTurn() {
         }, 1000);
     } else {
         // Dealer is done, check winner here if needed
-        if (dealerCount > 21 || (dealerCount >= 17 && dealerCount < 21 && dealerCount < playerCount)) {
+        if ((dealerCount == 21) && (playerCount == 21)){
+            youPushWith21.currentTime = 0;
+            youPushWith21.play();
+            showPlay()
+        }
+        else if (dealerCount > 21 || (dealerCount >= 17 && dealerCount < 21 && dealerCount < playerCount)) {
             document.getElementById('playerCount').innerText = `You win!`
+            showPlay()
         }
         else if (dealerCount >= 17 && dealerCount <= 21 && dealerCount > playerCount) {
             playerLose()
+            showPlay()
         }
         else if (dealerCount == playerCount){
             document.getElementById('playerCount').innerText = `You pushed.`
-        }
+            showPlay()
+        } 
     }
 }
 
@@ -63,9 +82,10 @@ function playerCountCheck() {
     else if (playerCount > 21) {
         document.getElementById('playerCount').innerText = `You busted with ${playerCount}`;
         hideButtons();
+        showPlay()
     }
     else if (playerCount = 21){
-        document.getElementById('playerCount').innerText = `You have: ${playerCount}`;
+        document.getElementById('playerCount').innerText = `You have Blackjack!`;
         hideButtons();
         dealerTurn();
     }
@@ -103,6 +123,10 @@ function playerLose(){
 function hideButtons(){
     document.getElementById('hit').style.visibility = 'hidden';
     document.getElementById('stand').style.visibility = 'hidden';
+    document.getElementById('hit').classList.remove('opacity-100');
+    document.getElementById('hit').classList.add('opacity-0');
+    document.getElementById('stand').classList.remove('opacity-100');
+    document.getElementById('stand').classList.add('opacity-0');
 }
 
 function aceCalc(card, currentCount){
@@ -119,15 +143,37 @@ function aceCalc(card, currentCount){
 }
 
 document.getElementById('play').addEventListener('click', _ => {
+
+    //Play button animation
+    document.getElementById('play').style.visibility = 'hidden';
+    document.getElementById('play').classList.remove('opacity-100');
+    document.getElementById('play').classList.add('opacity-0');
+    document.querySelector('h1').style.animation = 'none';
+    document.querySelector('h1').classList.add('fixed', 'top-10');
+
+    //Reveals the hit and stand buttons
+    document.getElementById('hit').classList.remove('opacity-0');
+    document.getElementById('hit').classList.add('opacity-100');
+    document.getElementById('stand').classList.remove('opacity-0');
+    document.getElementById('stand').classList.add('opacity-100');
+
+    //Removes existing cards from previous round
     document.querySelectorAll('.playerCards').forEach(card => card.remove());
     document.querySelectorAll('.dealerCards').forEach(card => card.remove());
     document.getElementById('hit').style.visibility = 'visible';
     document.getElementById('stand').style.visibility = 'visible';
-    console.log('clicked!')
+    document.querySelector('h2').style.visibility = 'visible';
+    console.log('clicked!');
+
+    //play audio when cards are drawn
+    drawCardAudio.currentTime = 0;
+    drawCardAudio.play();
+
     fetch('/play')
         .then(res => res.json())
         .then(data => {
-            //Creates img elements for the player's cards and dealer's cards
+            console.log(data)
+            //Creates img elements for the player's cards and dealer's cards 
             const playerCardOne = document.createElement('img');
             const playerCardTwo = document.createElement('img');
             const dealerCardOne = document.createElement('img');
@@ -166,6 +212,7 @@ document.getElementById('play').addEventListener('click', _ => {
             dealerHand.length = 0;
             dealerHand.push(data.dealerCardOne, data.dealerCardTwo);
             dealerCount = handCalc(dealerHand);
+            playerCountCheck();
 
             //Assigns the created html elements with their respective card images and displays the player's and dealer's card count
             document.getElementById('playercard1').src = data.cardOne.frontImage;
@@ -182,7 +229,14 @@ document.getElementById('play').addEventListener('click', _ => {
 })
 
 document.getElementById('hit').addEventListener('click', _ => {
-    console.log('hit')
+    //Play button click sound
+    //clickAudio.currentTime = 0;
+    //clickAudio.play();
+
+    //Play draw card sound
+    drawCardAudio.currentTime = 0;
+    drawCardAudio.play();
+
     fetch('/hit')
         .then(res => res.json())
         .then(data => {
@@ -195,13 +249,12 @@ document.getElementById('hit').addEventListener('click', _ => {
             playerCountCheck();
             console.log(playerCount);
             const drawnPlayerCardDiv = document.createElement('div');
-            drawnPlayerCardDiv.className = 'playerCards w-48 h-auto flex items-center justify-center';
+            drawnPlayerCardDiv.className = 'playerCards w-40 h-auto flex items-center justify-center';
             document.querySelector('.player').appendChild(drawnPlayerCardDiv).appendChild(drawnPlayerCard);
         })
 })
 
 document.getElementById('stand').addEventListener('click', _ => {
-    console.log('stand')
     fetch('/stand')
         .then(res => res.json())
         .then(data => {
